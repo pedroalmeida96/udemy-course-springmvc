@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableWebMvc
 @Configuration
-@ComponentScan(basePackages = "academy.leanprogramming")
+@ComponentScan(basePackages = "academy.learnprogramming")
 public class WebConfig {
-    
+
 }
