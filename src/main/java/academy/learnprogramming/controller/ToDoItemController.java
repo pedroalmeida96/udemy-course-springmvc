@@ -47,6 +47,8 @@ public class ToDoItemController {
     }
 
     /*
+    GetMapping + PostMapping has to do with POST,GET, etc http requests.
+
     http://localhost:8080/todo-list/add_items
      */
 
