@@ -60,12 +60,20 @@ public class ToDoItemController {
         return ViewNames.ADD_ITEMS;
     }
 
+    /*
+    Adds a new item from the page to add items.
+     */
+
     @PostMapping(Mappings.ADD_ITEM)
     public String processItem(@ModelAttribute(AttributeNames.TODO_ITEM) ToDoItem toDoItem) {
         log.info("TodoItem info: {}", toDoItem);
         todoItemService.addItem(toDoItem);
         return "redirect:/" + Mappings.ITEMS;
     }
+
+    /*
+    Based on the id an item is deleted. The request is send when the delete button is processed to the jsp.
+     */
 
     @GetMapping(Mappings.DELETE_ITEM)
     public String deleteItem(@RequestParam int id) {
