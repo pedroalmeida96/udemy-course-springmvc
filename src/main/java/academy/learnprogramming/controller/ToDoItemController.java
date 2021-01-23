@@ -69,11 +69,9 @@ public class ToDoItemController {
         return ViewNames.ADD_ITEMS;
     }
 
-        /*
+    /*
     Adds a new item from the page to add items.
      */
-
-
     @PostMapping(Mappings.ADD_ITEM)
     public String processItem(@ModelAttribute(AttributeNames.TODO_ITEM) ToDoItem todoItem) {
         log.info("todoItem from from = {}", todoItem);
@@ -86,14 +84,28 @@ public class ToDoItemController {
 
         return "redirect:/" + Mappings.ITEMS;
     }
+
     /*
     Based on the id an item is deleted. The request is send when the delete button is processed to the jsp.
      */
-
     @GetMapping(Mappings.DELETE_ITEM)
     public String deleteItem(@RequestParam int id) {
         log.info("Deleting item with id= {}", id);
         todoItemService.removeItem(id);
         return "redirect:/" + Mappings.ITEMS;
+    }
+
+
+    /*
+    todoItemService is going to load in an object from the service that loads from the model the item that matches the
+    item with the ID in question.
+    When its matched is loaded in model and displayed in the jsp with the TODO_ITEM=todoItems.
+     */
+    @GetMapping(Mappings.VIEW_ITEM)
+    public String viewItem(@RequestParam int id, Model model) {
+        log.info("Viewing item with id= {}", id);
+        ToDoItem todoItem = todoItemService.getItem(id);
+        model.addAttribute(AttributeNames.TODO_ITEM, todoItem);
+        return ViewNames.VIEW_ITEMS;
     }
 }
