@@ -3,7 +3,6 @@ package academy.learnprogramming.controller;
 import academy.learnprogramming.model.ToDoItem;
 import academy.learnprogramming.model.TodoData;
 import academy.learnprogramming.service.TodoItemService;
-import academy.learnprogramming.service.TodoItemServiceImpl;
 import academy.learnprogramming.utils.AttributeNames;
 import academy.learnprogramming.utils.Mappings;
 import academy.learnprogramming.utils.ViewNames;
@@ -22,13 +21,16 @@ import java.time.LocalDate;
 @Controller
 public class ToDoItemController {
 
-    private TodoItemService todoItemService;
+    // == fields ==
+    private final TodoItemService todoItemService;
 
+    // == constructors ==
     @Autowired
     public ToDoItemController(TodoItemService todoItemService) {
         this.todoItemService = todoItemService;
     }
 
+    // == model attributes ==
     @ModelAttribute
     public TodoData todoData() {
         return todoItemService.getData();
@@ -54,33 +56,44 @@ public class ToDoItemController {
      */
 
     @GetMapping(Mappings.ADD_ITEM)
-    public String addEditItem(Model model) {
-        ToDoItem todoItem = new ToDoItem("", "", LocalDate.now());
+    public String addEditItem(@RequestParam(required = false, defaultValue = "-1") int id, Model model) {
+
+        log.info("editing id = {}", id);
+        ToDoItem todoItem = todoItemService.getItem(id);
+
+        if (todoItem == null) {
+            todoItem = new ToDoItem("", "", LocalDate.now());
+        }
+
         model.addAttribute(AttributeNames.TODO_ITEM, todoItem);
         return ViewNames.ADD_ITEMS;
     }
 
-    /*
+        /*
     Adds a new item from the page to add items.
      */
 
+
     @PostMapping(Mappings.ADD_ITEM)
-    public String processItem(@ModelAttribute(AttributeNames.TODO_ITEM) ToDoItem toDoItem) {
-        log.info("TodoItem info: {}", toDoItem);
-        todoItemService.addItem(toDoItem);
+    public String processItem(@ModelAttribute(AttributeNames.TODO_ITEM) ToDoItem todoItem) {
+        log.info("todoItem from from = {}", todoItem);
+
+        if (todoItem.getId() == 0) {
+            todoItemService.addItem(todoItem);
+        } else {
+            todoItemService.updateItem(todoItem);
+        }
+
         return "redirect:/" + Mappings.ITEMS;
     }
-
     /*
     Based on the id an item is deleted. The request is send when the delete button is processed to the jsp.
      */
 
     @GetMapping(Mappings.DELETE_ITEM)
     public String deleteItem(@RequestParam int id) {
-        log.info("deleting item: {}", id);
+        log.info("Deleting item with id= {}", id);
         todoItemService.removeItem(id);
         return "redirect:/" + Mappings.ITEMS;
     }
-
-
 }
